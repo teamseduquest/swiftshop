@@ -1,0 +1,67 @@
+{% extends "main.html" %}
+{% block title %}Register{% endblock %}
+{% load form_tags %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow border-0">
+        <div class="card-body p-4">
+          <h3 class="text-center text-success mb-4">
+            <i class="bi bi-person-plus me-2"></i> Create an Account
+          </h3>
+
+          <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field|add_class:"form-control" }}
+
+              {% if field.help_text %}
+              <div class="form-text text-muted small d-none" id="help-{{ field.id_for_label }}">
+                {{ field.help_text }}
+              </div>
+              {% endif %}
+
+              {% for error in field.errors %}
+              <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-success w-100 py-2">
+              <i class="bi bi-check-circle me-1"></i> Register
+            </button>
+          </form>
+
+          <p class="mt-4 mb-0 text-center">
+            Already have an account?
+            <a href="{% url 'login-user' %}" class="text-primary text-decoration-none">Login here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- JS to toggle help text on focus -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const fields = document.querySelectorAll("input, select, textarea");
+
+    fields.forEach((input) => {
+      const helpText = document.getElementById("help-" + input.id);
+      if (!helpText) return;
+
+      input.addEventListener("focus", () => {
+        helpText.classList.remove("d-none");
+      });
+
+      input.addEventListener("blur", () => {
+        helpText.classList.add("d-none");
+      });
+    });
+  });
+</script>
+
+{% endblock %}

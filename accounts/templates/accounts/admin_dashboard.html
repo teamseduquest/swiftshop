@@ -1,0 +1,63 @@
+{% extends "main.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+
+{% block content %}
+{{ sales_labels|json_script:"labels-data" }}
+{{ sales_data|json_script:"sales-data" }}
+<div class="container mt-4 admin-dashboard">
+  <h3 class="mb-4">📊 Admin Dashboard</h3>
+
+  <div class="row g-4">
+    <div class="col-md-4 col-sm-6">
+      <div class="card text-bg-primary shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">👥 Total Users</h5>
+          <h3>{{ total_users }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="card text-bg-success shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">📦 Total Products</h5>
+          <h3>{{ total_products }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="card text-bg-warning shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">🧾 Total Orders</h5>
+          <h3>{{ total_orders }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-sm-6">
+      <div class="card text-bg-info shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">💰 Total Sales</h5>
+          <h3>$ {{ total_sales|floatformat:2 }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-sm-6">
+      <div class="card text-bg-danger shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">⏳ Pending Orders</h5>
+          <h3>{{ pending_orders }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center mt-5">
+    <a href="{% url 'admin:index' %}" class="btn btn-outline-dark dashboard-btn">
+      Go to Django Admin
+    </a>
+  </div>
+</div>
+{% endblock %}

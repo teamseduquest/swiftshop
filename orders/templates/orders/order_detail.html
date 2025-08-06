@@ -1,0 +1,52 @@
+{% extends "main.html" %}
+{% block title %}Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h6 class="mb-0">📦 <i>Order {{ order.order_id }}</i></h6>
+    </div>
+    <div class="card-body">
+      <p><strong>Customer:</strong> {{ order.user.username }}</p>
+      <p><strong>Placed on:</strong> {{ order.created_at|date:"M d, Y H:i" }}</p>
+
+      <hr>
+
+      <h6>🛍️ Items:</h6>
+
+      <!-- ✅ Responsive Table Wrapper -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Product</th>
+              <th>Price (Ksh)</th>
+              <th>Quantity</th>
+              <th>Total (Ksh)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in order.items.all %}
+            <tr>
+              <td>{{ item.product.name }}</td>
+              <td>{{ item.price }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>Ksh {{ item.total|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="text-end mt-3">
+        <h5 class="fw-bold">Grand Total: Ksh {{ order.total_price|floatformat:2 }}</h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <a href="{% url 'order_list' %}" class="btn btn-outline-secondary">← Back to Orders</a>
+  </div>
+</div>
+{% endblock %}

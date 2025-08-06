@@ -1,0 +1,24 @@
+{% extends "main.html" %}
+{% block title %}Approve Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title mb-4">🛍️ Approve Order #{{ order.id }}</h3>
+
+      <ul class="list-group mb-4">
+        <li class="list-group-item"><strong>User:</strong> {{ order.user.get_full_name }}</li>
+        <li class="list-group-item"><strong>Total:</strong> ${{ order.total_price }}</li>
+        <li class="list-group-item"><strong>Status:</strong> {{ order.status }}</li>
+      </ul>
+
+      <form method="post" class="d-flex flex-column flex-md-row gap-3">
+        {% csrf_token %}
+        <button type="submit" name="decision" value="approved" class="btn btn-success w-100 w-md-auto">✅ Approve</button>
+        <button type="submit" name="decision" value="rejected" class="btn btn-danger w-100 w-md-auto">❌ Reject</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

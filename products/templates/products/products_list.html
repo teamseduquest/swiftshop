@@ -1,0 +1,185 @@
+{% extends "main.html" %}
+{% block title %}Product List{% endblock %}
+{% load static %}
+{% block content %}
+<div class="container-fluid my-4">
+  <div class="row">
+
+    <!-- Sidebar (toggle on mobile) -->
+    <div class="col-12 d-md-none mb-3">
+      <button class="btn btn-outline-dark w-100" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSidebar">
+        Toggle Categories
+      </button>
+      <div class="collapse mt-2" id="mobileSidebar">
+        <div class="bg-light p-3 rounded shadow-sm">
+          <h5 class="mb-3">Categories</h5>
+          <ul class="nav flex-column" id="categoryList">
+            <li class="nav-item">
+              <a class="nav-link {% if not selected_category %}active fw-bold{% endif %}" href="{% url 'products_list' %}">All Products</a>
+            </li>
+            {% for cat in categories %}
+            <li class="nav-item category-item {% if forloop.counter > 5 %}d-none extra-category{% endif %}">
+              <a class="nav-link {% if selected_category == cat.name %}active fw-bold text-primary{% endif %}" href="?category={{ cat.name }}">
+                {{ cat.name|title }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% if categories|length > 5 %}
+          <div class="mt-2 text-end">
+            <button class="btn btn-sm btn-outline-secondary" type="button" id="toggleCategories">Show more</button>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar for desktop -->
+    <div class="col-md-3 d-none d-md-block mb-3">
+      <div class="bg-light p-3 rounded shadow-sm">
+        <h5 class="mb-3">Categories</h5>
+        <ul class="nav flex-column" id="categoryList">
+          <li class="nav-item">
+            <a class="nav-link {% if not selected_category %}active fw-bold{% endif %}" href="{% url 'products_list' %}">All Products</a>
+          </li>
+          {% for cat in categories %}
+          <li class="nav-item category-item {% if forloop.counter > 7 %}d-none extra-category{% endif %}">
+            <a class="nav-link {% if selected_category == cat.name %}active fw-bold text-primary{% endif %}" href="?category={{ cat.name }}">
+              {{ cat.name|title }}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% if categories|length > 7 %}
+        <div class="mt-2 text-end">
+          <button class="btn btn-sm btn-outline-secondary" type="button" id="toggleCategories">Show more</button>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Main Section -->
+    <div class="col-md-9">
+
+      <!-- Filters -->
+      <div class="bg-white p-3 rounded shadow-sm mb-4">
+        <form method="get" class="row g-2 align-items-end">
+
+          <!-- Desktop filters only -->
+          <div class="d-none d-md-flex flex-wrap">
+            <div class="col-md-3 pe-2">
+              <label>Sort By:</label>
+              <select name="sort" class="form-select">
+                <option value="name" {% if request.GET.sort == "name" %}selected{% endif %}>Name</option>
+                <option value="price" {% if request.GET.sort == "price" %}selected{% endif %}>Price</option>
+                <option value="latest" {% if request.GET.sort == "latest" %}selected{% endif %}>Latest</option>
+              </select>
+            </div>
+
+            <div class="col-md-2 pe-2">
+              <label>Min Price:</label>
+              <input type="number" name="min_price" value="{{ request.GET.min_price }}" class="form-control">
+            </div>
+
+            <div class="col-md-2 pe-2">
+              <label>Max Price:</label>
+              <input type="number" name="max_price" value="{{ request.GET.max_price }}" class="form-control">
+            </div>
+
+            <div class="col-md-2 pe-2">
+              <div class="form-check mt-4">
+                <input class="form-check-input" type="checkbox" name="in_stock" value="1" {% if request.GET.in_stock %}checked{% endif %}>
+                <label class="form-check-label">In Stock</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search (always visible) -->
+          <div class="col-12 col-md-3 d-flex mt-2 mt-md-0">
+            <input type="text" name="q" class="form-control me-2" placeholder="Search..." value="{{ request.GET.q }}">
+            <button class="btn btn-primary" type="submit">Apply</button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Product Cards -->
+      {% if products %}
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for product in products %}
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" style="height: 250px; object-fit: cover;" alt="{{ product.name }}">
+            {% else %}
+            <img src="{% static 'images/download.png' %}" class="card-img-top" style="height: 250px; object-fit: cover;" alt="No image">
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ product.name|truncatechars:30 }}</h5>
+              <p class="card-text text-muted">{{ product.description|truncatechars:60 }}</p>
+              <span class="fw-bold mb-2">$ {{ product.price }}</span>
+              <a href="{% url 'add_to_cart' product.id %}" class="btn btn-sm btn-success mt-auto">Add to Cart</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      <div class="d-flex justify-content-center mt-4 overflow-auto">
+        <ul class="pagination flex-wrap">
+          {% if products.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ products.previous_page_number }}&{{ request.GET.urlencode }}">Previous</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">Previous</span></li>
+          {% endif %}
+
+          {% for page_num in products.paginator.page_range %}
+          <li class="page-item {% if products.number == page_num %}active{% endif %}">
+            <a class="page-link" href="?page={{ page_num }}&{{ request.GET.urlencode }}">{{ page_num }}</a>
+          </li>
+          {% endfor %}
+
+          {% if products.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ products.next_page_number }}&{{ request.GET.urlencode }}">Next</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">Next</span></li>
+          {% endif %}
+        </ul>
+      </div>
+
+      {% else %}
+      <div class="alert alert-warning mt-4">No products found.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Floating Cart Button (Mobile) -->
+<a href="{% url 'cart_detail' %}" class="btn btn-warning position-fixed bottom-0 end-0 m-3 d-lg-none shadow">
+  🛒 Cart
+  {% if cart_item_count %}
+  <span class="badge bg-danger ms-1">{{ cart_item_count }}</span>
+  {% endif %}
+</a>
+
+<!-- Toggle categories script -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggleBtn = document.getElementById("toggleCategories");
+    const extraItems = document.querySelectorAll(".extra-category");
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener("click", () => {
+        const isHidden = extraItems[0].classList.contains("d-none");
+        extraItems.forEach(el => el.classList.toggle("d-none"));
+        toggleBtn.textContent = isHidden ? "Show less" : "Show more";
+      });
+    }
+  });
+</script>
+{% endblock %}

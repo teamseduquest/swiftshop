@@ -1,0 +1,63 @@
+{% extends "main.html" %}
+{% block title %}My Orders{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h3 class="mb-4">🧾 My Orders</h3>
+
+  {% if orders %}
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Order ID</th>
+          <th>Date</th>
+          <th>Total (Ksh)</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>{{ order.order_id }}</td>
+          <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+          <td>Ksh {{ order.total_price|floatformat:2 }}</td>
+          <td>
+            {% if order.status == "completed" %}
+            <span class="badge rounded-pill bg-success px-3 py-2 shadow-sm">
+              ✅ Completed
+            </span>
+
+            {% elif order.status == "pending" or not order.status %}
+            <span class="badge rounded-pill bg-warning text-dark px-3 py-2 shadow-sm">
+              ⏳ Pending
+            </span>
+
+            {% elif order.status == "rejected" %}
+            <span class="badge rounded-pill bg-danger px-3 py-2 shadow-sm">
+              ❌ Rejected
+            </span>
+
+            {% else %}
+            <span class="badge rounded-pill bg-secondary px-3 py-2 shadow-sm">
+              ❓ Unknown
+            </span>
+            {% endif %}
+
+          </td>
+          <td>
+            <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-primary">
+              View Details
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="alert alert-info">You have not placed any orders yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,106 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm py-3">
+  <div class="container-fluid">
+
+    <!-- 🚀 Logo (Left) -->
+    <a class="navbar-brand fw-bold" href="{% url 'products_list' %}">
+      <span class="text-warning">🛍️ QuickMart</span>
+    </a>
+
+    <!-- 🛒 Cart Icon (Mobile Only) -->
+    <a class="btn btn-sm btn-outline-light position-relative d-lg-none ms-auto me-2" href="{% url 'cart_detail' %}">
+      🛒
+      {% if cart_item_count %}
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{ cart_item_count }}
+      </span>
+      {% endif %}
+    </a>
+
+    <!-- 👤 Account (Mobile Only) -->
+    {% if request.user.is_authenticated and not is_staff %}
+    <div class="dropdown d-lg-none me-2">
+      <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" id="userDropdownMobile"
+        data-bs-toggle="dropdown" aria-expanded="false">
+        {{ request.user.username }}
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdownMobile">
+        <li><a class="dropdown-item" href="{% url 'dashboard_redirect' %}">My Account</a></li>
+        <li><a class="dropdown-item" href="{% url 'order_list' %}">My Orders</a></li>
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+        <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+      </ul>
+    </div>
+    {% else %}
+    <div class="d-lg-none me-2">
+      <a class="btn btn-sm btn-outline-light me-1" href="{% url 'login-user' %}">Login</a>
+      <a class="btn btn-sm btn-warning" href="{% url 'register' %}">Sign Up</a>
+    </div>
+    {% endif %}
+
+    <!-- 🍔 Toggler -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+      aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    {% if request.user.is_authenticated and not request.user.is_staff %}
+    <!-- 🌐 Collapsible Content -->
+    <div class="collapse navbar-collapse justify-content-between" id="mainNavbar">
+
+      <!-- 🧭 Center Nav Links -->
+
+
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-center">
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'products_list' %}">🏠 Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'products_list' %}">🛒 Products</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'order_list' %}">📦 My Orders</a>
+        </li>
+      </ul>
+
+      <!-- ✅ Right Controls (Desktop Only) -->
+      <div class="d-none d-lg-flex align-items-center gap-3">
+
+        <a class="btn btn-outline-light position-relative" href="{% url 'cart_detail' %}">
+          🛒
+          {% if cart_item_count %}
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ cart_item_count }}
+          </span>
+          {% endif %}
+        </a>
+
+
+
+        <div class="dropdown">
+          <a class="btn btn-outline-light dropdown-toggle" href="#" id="userDropdownDesktop" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            👋 {{ request.user.username }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdownDesktop">
+            <li><a class="dropdown-item" href="{% url 'dashboard_redirect' %}">My Account</a></li>
+            <li><a class="dropdown-item" href="{% url 'order_list' %}">My Orders</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+          </ul>
+        </div>
+        {% elif request.user.is_authenticated and request.user.is_staff%}
+        <a class="btn btn-outline-light dropdown-toggle" href="#" id="userDropdownDesktop" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          👋 {{ request.user.username }}
+        </a>
+        {% else %}
+        <a class="btn btn-outline-light" href="{% url 'login-user' %}">Login</a>
+        <a class="btn btn-warning" href="{% url 'register' %}">Sign Up</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
