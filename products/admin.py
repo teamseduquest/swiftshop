@@ -3,29 +3,29 @@ from .models import Product, Category
 from django.utils.html import format_html
 import requests
 from urllib.parse import urlparse
-from django.core.files.temp import NamedTemporaryFile
 from django.core.files import File
 import os
+import tempfile
 
-
-import tempfile  # replace NamedTemporaryFile with this
 
 def download_image_to_product(product_obj, image_url):
     try:
-        image_response = requests.get(image_url)
-        if image_response.status_code == 200:
-            # Use tempfile instead of NamedTemporaryFile from Django
-            with tempfile.NamedTemporaryFile(suffix=".jpg") as img_temp:
-                img_temp.write(image_response.content)
+        response = requests.get(image_url)
+        if response.status_code == 200:
+            filename = os.path.basename(urlparse(image_url).path)
+            with tempfile.NamedTemporaryFile(suffix=os.path.splitext(filename)[1]) as img_temp:
+                img_temp.write(response.content)
                 img_temp.flush()
-                filename = os.path.basename(urlparse(image_url).path)
+
+                # This uses the DEFAULT_FILE_STORAGE — e.g., Cloudinary if configured
                 product_obj.image.save(filename, File(img_temp), save=True)
+                print("✅ Saved image to:", product_obj.image.url)
+        else:
+            print(f"❌ Failed to fetch image. Status code: {response.status_code}")
     except Exception as e:
         print(f"❌ Error saving image: {e}")
 
 
-
-# ✅ Admin action to fetch products and save images
 @admin.action(description="📦 Fetch 100+ Products from DummyJSON API")
 def fetch_products_from_dummyjson(modeladmin, request, queryset):
     url = 'https://dummyjson.com/products?limit=100'
@@ -50,12 +50,11 @@ def fetch_products_from_dummyjson(modeladmin, request, queryset):
             if created or not product.image:
                 download_image_to_product(product, item.get('thumbnail'))
 
-        modeladmin.message_user(request, "✅ Products fetched and images saved.")
+        modeladmin.message_user(request, "✅ Products and images fetched successfully.")
     else:
-        modeladmin.message_user(request, "❌ Failed to fetch from DummyJSON API", level='error')
+        modeladmin.message_user(request, "❌ Failed to fetch products", level='error')
 
 
-# ✅ Product Admin
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'category', 'stock', 'image_tag')
@@ -70,7 +69,6 @@ class ProductAdmin(admin.ModelAdmin):
     image_tag.short_description = 'Image'
 
 
-# ✅ Category Admin
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name']
