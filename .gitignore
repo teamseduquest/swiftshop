@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.env
+*.DS_Store
+
+# Django
+db.sqlite3
+/static/
+media/
+
+# VSCode or JetBrains
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Git
+.env
+*.bak
