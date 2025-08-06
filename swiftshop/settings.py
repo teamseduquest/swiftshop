@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-
+import django
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -34,7 +35,9 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.10.236','127.0.0.1' ]
+# ALLOWED_HOSTS = ['192.168.10.236','127.0.0.1' ]
+ALLOWED_HOSTS = ['swiftshop.onrender.com']
+
 
 
 # Application definition
@@ -141,7 +144,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/dashboard/'
 
 # Admin session fix
-import django
+
 if django.VERSION >= (5, 0):
     ADMIN_SESSION_COOKIE_NAME = 'admin_sessionid'
 # SESSION_COOKIE_NAME = 'user_sessionid'
@@ -151,3 +154,10 @@ ADMIN_SESSION_COOKIE_NAME = 'admin_sessionid'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR/'media'
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
