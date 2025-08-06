@@ -33,10 +33,10 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # ALLOWED_HOSTS = ['192.168.10.236','127.0.0.1' ]
-ALLOWED_HOSTS = ['swiftshop.onrender.com']
+ALLOWED_HOSTS = ['swiftshop.onrender.com','swiftshop-jxzp.onrender.com']
 
 
 
