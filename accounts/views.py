@@ -142,8 +142,8 @@ from django.http import HttpResponse
 def create_superuser(request):
     User = get_user_model()
     username = "admin"
-    email = "admin@example.com"
-    password = "StrongPassword123"
+    email = "silasmulama26@gmail.com"
+    password = "Silas@2023"
 
     if not User.objects.filter(username=username).exists():
         User.objects.create_superuser(username=username, email=email, password=password)
