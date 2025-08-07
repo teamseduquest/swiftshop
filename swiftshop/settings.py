@@ -11,7 +11,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['swiftshop-jxzp.onrender.com', 'swiftshop.onrender.com']
+ALLOWED_HOSTS = ['swiftshop-jxzp.onrender.com', 'swiftshop.onrender.com','127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
@@ -67,17 +67,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'swiftshop.wsgi.application'
 
-# PostgreSQL database (Render)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('PGDATABASE'),
-        'USER': os.getenv('PGUSER'),
-        'PASSWORD': os.getenv('PGPASSWORD'),
-        'HOST': os.getenv('PGHOST'),
-        'PORT': os.getenv('PGPORT', '5432'),
+# DATABASES
+USE_SQLITE = config("USE_SQLITE", default="True") == "True"
+
+if USE_SQLITE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST'),
+            'PORT': config('DB_PORT', default='5432'),
+        }
+    }
+
 
 
 # Email backend (Gmail SMTP)

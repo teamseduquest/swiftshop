@@ -2,7 +2,7 @@
 {% block title %}Product List{% endblock %}
 {% load static %}
 {% block content %}
-<div class="container-fluid my-4">
+{% comment %} <div class="container-fluid my-4"> {% endcomment %}
   <div class="row">
 
     <!-- Sidebar (toggle on mobile) -->
@@ -157,15 +157,15 @@
       {% endif %}
     </div>
   </div>
-</div>
+{% comment %} </div> {% endcomment %}
 
 <!-- Floating Cart Button (Mobile) -->
-<a href="{% url 'cart_detail' %}" class="btn btn-warning position-fixed bottom-0 end-0 m-3 d-lg-none shadow">
+{% comment %} <a href="{% url 'cart_detail' %}" class="btn btn-warning position-fixed bottom-0 end-0 m-3 d-lg-none shadow">
   🛒 Cart
   {% if cart_item_count %}
   <span class="badge bg-danger ms-1">{{ cart_item_count }}</span>
   {% endif %}
-</a>
+</a> {% endcomment %}
 
 <!-- Toggle categories script -->
 <script>
